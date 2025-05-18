@@ -58,18 +58,15 @@ img {
 h1, h2, h3, p, footer {
   word-break: break-word;
 }
-/* Deixar os botões das abas com texto rosa */
 .nav-tabs .nav-link {
   color: deeppink !important;
 }
 
-/* Opcional: deixar o fundo da aba ativa rosa claro e o texto branco */
 .nav-tabs .nav-link.active {
   background-color: pink !important;
   color: white !important;
 }
 
-/* Adiciona espaçamento entre elementos no formulário da visualização */
 #page-preview form > * {
   margin-bottom: 12px;
 }
