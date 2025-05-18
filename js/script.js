@@ -10,7 +10,6 @@ document.addEventListener('DOMContentLoaded', function () {
         noneOption.value = 'none';
         noneOption.textContent = 'Nenhum';
         firstElementType.insertBefore(noneOption, firstElementType.firstChild);
-        
         toggleHeaderElementOptions(firstElementType);
     }
 
@@ -21,61 +20,28 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('save-html').addEventListener('click', saveHTML);
     document.getElementById('load-html').addEventListener('click', loadHTML);
     document.getElementById('clear-storage').addEventListener('click', clearStorage);
-    document.getElementById('add-header-element').addEventListener('click', addHeaderElement);
+    document.getElementById('add-header-element').addEventListener('click', function () {
+        addHeaderElement();
+        updatePreview();
+    });
+    document.getElementById('add-menu-item').addEventListener('click', function () {
+        addMenuItem();
+        updatePreview();
+    });
+    document.getElementById('add-gallery-card').addEventListener('click', function () {
+        addGalleryCard();
+        updatePreview();
+    });
+    document.getElementById('add-form-field').addEventListener('click', function () {
+        addFormField();
+        updatePreview();
+    });
 
-    document.getElementById('add-menu-item').addEventListener('click', addMenuItem);
-    document.getElementById('add-gallery-card').addEventListener('click', addGalleryCard);
-    document.getElementById('add-form-field').addEventListener('click', addFormField);
+    document.querySelectorAll('input, select, textarea').forEach(el => {
+        el.addEventListener('input', updatePreview);
+        el.addEventListener('change', updatePreview);
+    });
 
-    document.getElementById('header-padding').addEventListener('input', function () {
-        document.getElementById('header-padding-value').textContent = this.value + 'px';
-    });
-    document.getElementById('menu-padding').addEventListener('input', function () {
-        document.getElementById('menu-padding-value').textContent = this.value + 'px';
-    });
-    document.getElementById('menu-item-padding').addEventListener('input', function () {
-        document.getElementById('menu-item-padding-value').textContent = this.value + 'px';
-    });
-    document.getElementById('gallery-padding').addEventListener('input', function () {
-        document.getElementById('gallery-padding-value').textContent = this.value + 'px';
-    });
-    document.getElementById('footer-padding').addEventListener('input', function () {
-        document.getElementById('footer-padding-value').textContent = this.value + 'px';
-    });
-    document.getElementById('form-padding').addEventListener('input', function () {
-        document.getElementById('form-padding-value').textContent = this.value + 'px';
-    });
-    
-    document.getElementById('menu-items').addEventListener('click', function(e) {
-        if (e.target && e.target.classList.contains('remove-menu-item')) {
-            if (document.querySelectorAll('#menu-items .menu-item').length > 1) {
-                e.target.closest('.menu-item').remove();
-            } else {
-                alert('É necessário manter pelo menos um item de menu!');
-            }
-        }
-    });
-    
-    document.getElementById('gallery-cards').addEventListener('click', function(e) {
-        if (e.target && e.target.classList.contains('remove-gallery-card')) {
-            if (document.querySelectorAll('#gallery-cards .gallery-card').length > 1) {
-                e.target.closest('.gallery-card').remove();
-            } else {
-                alert('É necessário manter pelo menos um card na galeria!');
-            }
-        }
-    });
-    
-    document.getElementById('form-fields').addEventListener('click', function(e) {
-        if (e.target && e.target.classList.contains('remove-form-field')) {
-            if (document.querySelectorAll('#form-fields .form-field').length > 1) {
-                e.target.closest('.form-field').remove();
-            } else {
-                alert('É necessário manter pelo menos um campo no formulário!');
-            }
-        }
-    });
-   
     document.getElementById('header-elements').addEventListener('click', function(e) {
         if (e.target && e.target.classList.contains('remove-element')) {
             if (document.querySelectorAll('#header-elements .header-element').length > 1) {
@@ -85,102 +51,138 @@ document.addEventListener('DOMContentLoaded', function () {
                 elementType.value = 'none';
                 toggleHeaderElementOptions(elementType);
             }
+            updatePreview();
         }
     });
-    
+
+    document.getElementById('menu-items').addEventListener('click', function(e) {
+        if (e.target && e.target.classList.contains('remove-menu-item')) {
+            if (document.querySelectorAll('#menu-items .menu-item').length > 1) {
+                e.target.closest('.menu-item').remove();
+                updatePreview();
+            } else {
+                alert('É necessário manter pelo menos um item de menu!');
+            }
+        }
+    });
+
+    document.getElementById('gallery-cards').addEventListener('click', function(e) {
+        if (e.target && e.target.classList.contains('remove-gallery-card')) {
+            if (document.querySelectorAll('#gallery-cards .gallery-card').length > 1) {
+                e.target.closest('.gallery-card').remove();
+                updatePreview();
+            } else {
+                alert('É necessário manter pelo menos um card na galeria!');
+            }
+        }
+    });
+
+    document.getElementById('form-fields').addEventListener('click', function(e) {
+        if (e.target && e.target.classList.contains('remove-form-field')) {
+            if (document.querySelectorAll('#form-fields .form-field').length > 1) {
+                e.target.closest('.form-field').remove();
+                updatePreview();
+            } else {
+                alert('É necessário manter pelo menos um campo no formulário!');
+            }
+        }
+    });
+
     document.addEventListener('change', function(e) {
         if (e.target && e.target.classList.contains('element-type')) {
             toggleHeaderElementOptions(e.target);
+            updatePreview();
         }
-        
         if (e.target && e.target.classList.contains('field-type')) {
             toggleFormFieldOptions(e.target);
+            updatePreview();
         }
     });
 });
 
 document.addEventListener('change', function(e) {
- if (e.target && e.target.classList.contains('logo-upload')) {
-      const file = e.target.files[0];
-      if (file) {
-          const reader = new FileReader();
-          reader.onload = function(event) {
-              const parent = e.target.closest('.header-element');
-              const preview = parent.querySelector('.logo-preview');
-              if (preview) {
-                  preview.src = event.target.result;
-                  preview.style.display = 'block';
-              }
-          };
-          reader.readAsDataURL(file);
-      }
-  }
-  
-  if (e.target && e.target.classList.contains('banner-upload')) {
-      const file = e.target.files[0];
-      if (file) {
-          const reader = new FileReader();
-          reader.onload = function(event) {
-              const parent = e.target.closest('.header-element');
-              const preview = parent.querySelector('.banner-preview');
-              if (preview) {
-                  preview.src = event.target.result;
-                  preview.style.display = 'block';
-              }
-          };
-          reader.readAsDataURL(file);
-      }
-  }
-  
- if (e.target && e.target.classList.contains('menu-image-upload')) {
-      const file = e.target.files[0];
-      if (file) {
-          const reader = new FileReader();
-          reader.onload = function(event) {
-              const preview = document.getElementById('menu-image-preview');
-              if (preview) {
-                  preview.src = event.target.result;
-                  preview.style.display = 'block';
-              }
-          };
-          reader.readAsDataURL(file);
-      }
-  }
-  
-  if (e.target && e.target.classList.contains('gallery-image-upload')) {
-      const file = e.target.files[0];
-      if (file) {
-          const reader = new FileReader();
-          reader.onload = function(event) {
-              const preview = document.querySelector('.gallery-image-preview');
-              if (preview) {
-                  preview.src = event.target.result;
-                  preview.style.display = 'block';
-                  
-                  window.galleryUploadedImage = event.target.result;
-                  
-                  const galleryImageSelects = document.querySelectorAll('.gallery-image');
-                  galleryImageSelects.forEach(select => {
-                      let exists = false;
-                      for (let i = 0; i < select.options.length; i++) {
-                          if (select.options[i].value === 'uploaded') {
-                              exists = true;
-                              break;
-                          }
-                      }
-                      
-                      if (!exists) {
-                          const option = document.createElement('option');
-                          option.value = 'uploaded';
-                          option.text = 'Imagem Enviada';
-                          select.add(option);
-                      }
-                  });
-              }
-          };
-          reader.readAsDataURL(file);
-      }
-  }
+    if (e.target && e.target.classList.contains('logo-upload')) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const parent = e.target.closest('.header-element');
+                const preview = parent.querySelector('.logo-preview');
+                if (preview) {
+                    preview.src = event.target.result;
+                    preview.style.display = 'block';
+                    updatePreview();
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    if (e.target && e.target.classList.contains('banner-upload')) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const parent = e.target.closest('.header-element');
+                const preview = parent.querySelector('.banner-preview');
+                if (preview) {
+                    preview.src = event.target.result;
+                    preview.style.display = 'block';
+                    updatePreview();
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    if (e.target && e.target.classList.contains('menu-image-upload')) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const preview = document.getElementById('menu-image-preview');
+                if (preview) {
+                    preview.src = event.target.result;
+                    preview.style.display = 'block';
+                    updatePreview();
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    if (e.target && e.target.classList.contains('gallery-image-upload')) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const preview = document.querySelector('.gallery-image-preview');
+                if (preview) {
+                    preview.src = event.target.result;
+                    preview.style.display = 'block';
+                    window.galleryUploadedImage = event.target.result;
+                    const galleryImageSelects = document.querySelectorAll('.gallery-image');
+                    galleryImageSelects.forEach(select => {
+                        let exists = false;
+                        for (let i = 0; i < select.options.length; i++) {
+                            if (select.options[i].value === 'uploaded') {
+                                exists = true;
+                                break;
+                            }
+                        }
+                        if (!exists) {
+                            const option = document.createElement('option');
+                            option.value = 'uploaded';
+                            option.text = 'Imagem Enviada';
+                            select.add(option);
+                        }
+                    });
+                    updatePreview();
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+    }
 });
 
 function toggleHeaderElementOptions(selectElement) {
