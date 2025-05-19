@@ -2,7 +2,7 @@ let headerElements = 1;
 let menuItems = 1;
 let galleryCards = 1;
 let formFields = 1;
-
+// Executa o código quando o DOM estiver completamente carregado
 document.addEventListener('DOMContentLoaded', function () {
     const firstElementType = document.querySelector('#header-elements .header-element .element-type');
     if (firstElementType) {
@@ -12,14 +12,15 @@ document.addEventListener('DOMContentLoaded', function () {
         firstElementType.insertBefore(noneOption, firstElementType.firstChild);
         toggleHeaderElementOptions(firstElementType);
     }
-
+   //Atualiza visualização inicial
     updatePreview();
-
+    // Adiciona event listeners para os botões principais
     document.getElementById('update-preview').addEventListener('click', updatePreview);
     document.getElementById('show-html').addEventListener('click', showHTML);
     document.getElementById('save-html').addEventListener('click', saveHTML);
     document.getElementById('load-html').addEventListener('click', loadHTML);
     document.getElementById('clear-storage').addEventListener('click', clearStorage);
+     // Adiciona event listeners para os botões de adição de elementos
     document.getElementById('add-header-element').addEventListener('click', function () {
         addHeaderElement();
         updatePreview();
@@ -36,15 +37,16 @@ document.addEventListener('DOMContentLoaded', function () {
         addFormField();
         updatePreview();
     });
-
+     // Adiciona listeners para todos os inputs, selects e textareas para atualizar a visualização quando alterados
     document.querySelectorAll('input, select, textarea').forEach(el => {
         el.addEventListener('input', updatePreview);
         el.addEventListener('change', updatePreview);
     });
-
+    // Adiciona listener para remover elementos do cabeçalho
     document.getElementById('header-elements').addEventListener('click', function(e) {
         if (e.target && e.target.classList.contains('remove-element')) {
             if (document.querySelectorAll('#header-elements .header-element').length > 1) {
+                // Remove o item se houver mais de um
                 e.target.closest('.header-element').remove();
             } else {
                 const elementType = document.querySelector('#header-elements .header-element .element-type');
@@ -54,18 +56,19 @@ document.addEventListener('DOMContentLoaded', function () {
             updatePreview();
         }
     });
-
+     // Adiciona listener para remover itens do menu
     document.getElementById('menu-items').addEventListener('click', function(e) {
         if (e.target && e.target.classList.contains('remove-menu-item')) {
             if (document.querySelectorAll('#menu-items .menu-item').length > 1) {
                 e.target.closest('.menu-item').remove();
                 updatePreview();
             } else {
+                // Mostra alerta se tentar remover o último item
                 alert('É necessário manter pelo menos um item de menu!');
             }
         }
     });
-
+    // Adiciona listener para remover cards da galeria
     document.getElementById('gallery-cards').addEventListener('click', function(e) {
         if (e.target && e.target.classList.contains('remove-gallery-card')) {
             if (document.querySelectorAll('#gallery-cards .gallery-card').length > 1) {
@@ -76,7 +79,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
     });
-
+    // Adiciona listener para remover campos do formulário
     document.getElementById('form-fields').addEventListener('click', function(e) {
         if (e.target && e.target.classList.contains('remove-form-field')) {
             if (document.querySelectorAll('#form-fields .form-field').length > 1) {
@@ -87,9 +90,10 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
     });
-
+     // Adiciona listener global para mudanças em selects de tipo de elemento
     document.addEventListener('change', function(e) {
         if (e.target && e.target.classList.contains('element-type')) {
+         // Atualiza as opções visíveis com base no tipo de elemento selecionado
             toggleHeaderElementOptions(e.target);
             updatePreview();
         }
@@ -99,11 +103,12 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 });
-
+// Adiciona listener global para upload de imagens
 document.addEventListener('change', function(e) {
     if (e.target && e.target.classList.contains('logo-upload')) {
         const file = e.target.files[0];
         if (file) {
+           // Cria um FileReader para ler o arquivo como URL de dados
             const reader = new FileReader();
             reader.onload = function(event) {
                 const parent = e.target.closest('.header-element');
@@ -117,7 +122,7 @@ document.addEventListener('change', function(e) {
             reader.readAsDataURL(file);
         }
     }
-
+     // Upload de banner
     if (e.target && e.target.classList.contains('banner-upload')) {
         const file = e.target.files[0];
         if (file) {
@@ -134,7 +139,7 @@ document.addEventListener('change', function(e) {
             reader.readAsDataURL(file);
         }
     }
-
+    // Upload de imagem para o menu
     if (e.target && e.target.classList.contains('menu-image-upload')) {
         const file = e.target.files[0];
         if (file) {
@@ -150,7 +155,7 @@ document.addEventListener('change', function(e) {
             reader.readAsDataURL(file);
         }
     }
-
+       // Upload de imagem para a galeria
     if (e.target && e.target.classList.contains('gallery-image-upload')) {
         const file = e.target.files[0];
         if (file) {
@@ -184,17 +189,17 @@ document.addEventListener('change', function(e) {
         }
     }
 });
-
+// Função para alternar a visibilidade das opções com base no tipo de elemento de cabeçalho selecionado
 function toggleHeaderElementOptions(selectElement) {
   const parent = selectElement.closest('.header-element');
   const logoOptions = parent.querySelector('.logo-options');
   const titleOptions = parent.querySelector('.title-options');
   const bannerOptions = parent.querySelector('.banner-options');
-
+  // Esconde todas as opções inicialmente
   if (logoOptions) logoOptions.classList.add('d-none');
   if (titleOptions) titleOptions.classList.add('d-none');
   if (bannerOptions) bannerOptions.classList.add('d-none');
-
+ // Esconde também as prévias de imagens
   const logoPreview = parent.querySelector('.logo-preview');
   const bannerPreview = parent.querySelector('.banner-preview');
   if (logoPreview) logoPreview.style.display = 'none';
@@ -208,7 +213,7 @@ function toggleHeaderElementOptions(selectElement) {
       if (bannerOptions) bannerOptions.classList.remove('d-none');
   }
 }
-
+// Função para atualizar a visualização da página combinando todos os elementos
 function updatePreview() {
     const header = generateHeaderHTML();
     const menu = generateMenuHTML();
@@ -217,10 +222,10 @@ function updatePreview() {
     const footer = generateFooterHTML();
     document.getElementById('page-preview').innerHTML = header + menu + gallery + form + footer;
 }
-
+// Função para salvar o HTML completo no localStorage
 function saveHTML() {
     const preview = document.getElementById('page-preview').innerHTML;
-  
+      // Define o estilo da página
     const pageStyle = `
     body {
         background: ${document.getElementById('page-bg-color').value};
@@ -229,7 +234,7 @@ function saveHTML() {
         max-width: ${Math.min(2000, Math.max(600, parseInt(document.getElementById('page-max-width').value) || 1200))}px;
         margin: 0 auto;
     }`;
- 
+     // Define estilos adicionais para a interface de edição
     const extraStyles = `
     .editor-panel {
       background-color: #f5f5f5;
@@ -284,7 +289,7 @@ function saveHTML() {
     h1, h2, h3, p, footer {
       word-break: break-word;
     }`;
-  
+    // Constrói o HTML completo
     const fullHTML = `<!DOCTYPE html>
   <html lang="pt-br">
   <head>
@@ -300,13 +305,14 @@ function saveHTML() {
   ${preview}
   </body>
   </html>`;
-  
+    // Salva no localStorage
     localStorage.setItem('savedHTML', fullHTML);
     alert("HTML com CSS embutido salvo no localStorage!");
   }
-  
+  // Função para carregar o HTML salvo no localStorage
   function loadHTML() {
     const savedHTML = localStorage.getItem('savedHTML');
+    // Mostra o código HTML salvo
     if (savedHTML) {
       document.getElementById('html-code').classList.remove('d-none');
       document.getElementById('html-code-content').textContent = savedHTML;
@@ -314,12 +320,12 @@ function saveHTML() {
       alert("Nenhum HTML salvo encontrado.");
     }
   }
-  
+  // Função para limpar o HTML salvo no localStorage
   function clearStorage() {
     localStorage.removeItem('savedHTML');
     alert("LocalStorage limpo!");
   }
-  
+  // Função para mostrar o HTML atual sem CSS embutido
   function showHTML() {
     const preview = document.getElementById('page-preview').innerHTML;
     const fullHTML = `<!DOCTYPE html>
@@ -337,16 +343,16 @@ function saveHTML() {
     document.getElementById('html-code-content').textContent = fullHTML;
   }
   
-
+// Função para gerar o HTML do cabeçalho
 function generateHeaderHTML() {
   const bgColor = document.getElementById('header-bg-color').value;
   const padding = document.getElementById('header-padding').value;
   const direction = document.getElementById('header-flex-direction').value;
   const justify = document.getElementById('header-justify-content').value;
-
+  // Obtém todos os elementos do cabeçalho
   const elements = document.querySelectorAll('#header-elements .header-element');
   let content = '';
-
+   // Verifica se todos os elementos estão definidos como "none"
   let allNone = true;
   elements.forEach(el => {
       const type = el.querySelector('.element-type').value;
@@ -354,11 +360,11 @@ function generateHeaderHTML() {
           allNone = false;
       }
   });
-  
+ // Se todos forem "none", retorna vazio (sem cabeçalho)
   if (allNone) {
       return '';
   }
-
+  // Processa cada elemento do cabeçalho
   elements.forEach(el => {
       const type = el.querySelector('.element-type').value;
       
@@ -406,7 +412,7 @@ function generateHeaderHTML() {
   if (!content) {
       return '';
   }
-  
+   // Retorna o HTML do cabeçalho com o conteúdo
   return `<header style="background:${bgColor}; padding:${padding}px; display:flex; flex-direction:${direction}; justify-content:${justify}; align-items:center; gap:10px;">${content}</header>`;
 }
 
@@ -429,6 +435,7 @@ function generateMenuHTML() {
   items.forEach(item => {
       const text = item.querySelector('.menu-item-text').value;
       const link = item.querySelector('.menu-item-link').value;
+       // Cria a tag de imagem se houver URL
       listItems += `<li style="background:${itemBgColor}; padding:${itemPadding}px; margin:2px;"><a href="${link}" style="color:${textColor}; text-decoration:none;">${text}</a></li>`;
   });
 
@@ -437,7 +444,7 @@ function generateMenuHTML() {
 
   return `<nav style="background:${bgColor}; padding:${padding}px;">${imgPos === 'top' ? imgTag + finalList : finalList + imgTag}</nav>`;
 }
-
+// Função para gerar o HTML da galeria
 function generateGalleryHTML() {
   const bgColor = document.getElementById('gallery-bg-color').value;
   const padding = document.getElementById('gallery-padding').value;
@@ -445,13 +452,14 @@ function generateGalleryHTML() {
   const borderColor = document.getElementById('gallery-card-border-color').value;
   const textColor = document.getElementById('gallery-card-text-color').value;
   const columns = document.getElementById('gallery-columns').value;
-
+  
   const cards = document.querySelectorAll('#gallery-cards .gallery-card');
   let cardsHTML = '';
   cards.forEach(card => {
       const imgSelect = card.querySelector('.gallery-image');
       const imgValue = imgSelect.value;
       let imgUrl = imgValue;
+      // Usa a imagem carregada se selecionada
       if (imgValue === 'uploaded' && window.galleryUploadedImage) {
           imgUrl = window.galleryUploadedImage;
       }
@@ -461,27 +469,27 @@ function generateGalleryHTML() {
       cardsHTML += `<div style="border:1px solid ${borderColor}; background:${cardBg}; color:${textColor}; padding:10px;">
                       <img src="${imgUrl}" alt="" style="width:100%;"><h3>${title}</h3><p>${desc}</p></div>`;
   });
-
+ // Retorna o HTML da galeria com os cards em grid
   return `<section style="background:${bgColor}; padding:${padding}px;">
               <div style="display:grid; grid-template-columns: repeat(${columns}, 1fr); gap:10px;">${cardsHTML}</div>
           </section>`;
 }
-
+// Função para gerar o HTML do formulário
 function generateFormHTML() {
     const title = document.getElementById('form-title').value;
     const bgColor = document.getElementById('form-bg-color').value;
     const padding = document.getElementById('form-padding').value;
     const borderColor = document.getElementById('form-border-color').value;
     const textColor = document.getElementById('form-text-color').value;
-
+    // Inicia o HTML com o título e abertura da tag form
     const fields = document.querySelectorAll('#form-fields .form-field');
     let formHTML = `<h3 style="color:${textColor};">${title}</h3><form style="color:${textColor};">`;
-
+    // Processa cada campo do formulário
     fields.forEach(field => {
         const label = field.querySelector('.field-label').value;
         const type = field.querySelector('.field-type').value;
         const required = field.querySelector('.field-required').value === "true" ? "required" : "";
-
+        // Cria HTML diferente com base no tipo de campo
         if (type === "select") {
             const options = field.querySelector('.select-options-values').value.split(",").map(opt => `<option>${opt.trim()}</option>`).join("");
             formHTML += `<label>${label}</label><select ${required}>${options}</select><br>`;
@@ -497,9 +505,10 @@ function generateFormHTML() {
 
     formHTML += `<button type="submit">Enviar</button>`;
     formHTML += `</form>`;
+    // Retorna o HTML do formulário dentro de uma seção
     return `<section style="background:${bgColor}; border:1px solid ${borderColor}; padding:${padding}px;">${formHTML}</section>`;
 }
-
+// Função para gerar o HTML do rodapé
 function generateFooterHTML() {
     const bgColor = document.getElementById('footer-bg-color').value;
     const textColor = document.getElementById('footer-text-color').value;
@@ -520,10 +529,10 @@ function addMenuItem() {
     
     clone.querySelector('.menu-item-text').value = 'Item ' + menuItems;
     clone.querySelector('.menu-item-link').value = '#';
-    
+    // Adiciona o novo item ao container
     container.appendChild(clone);
 }
-
+// Função para adicionar um novo card de galeria
 function addGalleryCard() {
     galleryCards++;
     const container = document.getElementById('gallery-cards');
@@ -534,7 +543,7 @@ function addGalleryCard() {
     
     container.appendChild(clone);
 }
-
+// Função para adicionar um novo campo ao formulário
 function addFormField() {
     formFields++;
     const container = document.getElementById('form-fields');
@@ -552,8 +561,9 @@ function addFormField() {
     
     container.appendChild(clone);
 }
-
+// Função para adicionar um novo elemento ao cabeçalho
 function addHeaderElement() {
+    // Limita o número máximo de elementos a 3
     if (document.querySelectorAll('#header-elements .header-element').length >= 3) {
         alert('Máximo de 3 elementos permitidos no cabeçalho!');
         return;
